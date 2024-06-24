@@ -1,8 +1,8 @@
 import numpy as np, open3d
 
-INPUT_PATH = 'temp/train.npy'
-COMPLETE_PATH = 'temp/train_complete.npy'
-OCCLUDED_PATH = 'temp/train_occluded.npy'
+INPUT_PATH = 'OcCo_TF/data/O16/split/validation.npy'
+COMPLETE_PATH = 'OcCo_TF/data/O16/occluded/validation_complete.npy'
+OCCLUDED_PATH = 'OcCo_TF/data/O16/occluded/validation_occluded.npy'
 
 REQUIRED_CHARGE = 80 # Sensitivity to noise; higher value means more noise removal (and vice versa)
 REQUIRED_POINTS = 500 # Required number of points, after noise removal, to be considered for occlusion
@@ -41,8 +41,8 @@ print('Number of events: ' + str(num_of_events))
 complete_clouds = []
 occluded_clouds = []
 
-for index in range(int(num_of_events / 100)):
-    if (index % 100 == 0):
+for index in range(num_of_events // 100):
+    if (index % 1000 == 0):
         print('Now on: Event #' + str(index))
     event = data[index]
     event = event[np.any(event, axis=1)] # Remove all-zero rows
@@ -58,7 +58,6 @@ for index in range(int(num_of_events / 100)):
     for j in range(SNAPSHOTS_PER_CLOUD):
         camera = randomCameraPosition(CAMERA_BOUNDARIES)
         new_points = smartOccludePointCloud(points, camera, OCCLUSION_PERSISTANCE)
-        print(new_points.shape[0])
         new_points = new_points[np.random.choice(new_points.shape[0], size=new_num_of_points, replace=False)] # Downsample
         occluded_clouds_i.append(new_points)
     occluded_clouds.append(occluded_clouds_i)

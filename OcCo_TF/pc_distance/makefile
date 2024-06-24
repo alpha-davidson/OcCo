@@ -1,8 +1,8 @@
-cuda_inc = /home/DAVIDSON/destephens/.conda/envs/occo-tf/
-cuda_lib = /home/DAVIDSON/destephens/.conda/envs/occo-tf/lib/
+cuda_inc = $HOME/.conda/envs/occo-tf/
+cuda_lib = $HOME/.conda/envs/occo-tf/lib/
 nvcc = nvcc
-tf_inc = /home/DAVIDSON/destephens/.conda/envs/occo-tf/lib/python3.7/site-packages/tensorflow_core/include/
-tf_lib = /home/DAVIDSON/destephens/.conda/envs/occo-tf/lib/python3.7/site-packages/tensorflow_core/
+tf_inc = $HOME/.conda/envs/occo-tf/lib/python3.7/site-packages/tensorflow_core/include/
+tf_lib = $HOME/.conda/envs/occo-tf/lib/python3.7/site-packages/tensorflow_core/
 
 all: tf_nndistance_so.so tf_approxmatch_so.so
 

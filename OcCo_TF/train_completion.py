@@ -213,7 +213,7 @@ def train(args):
                 plot_path = os.path.join(args.log_dir, 'plots',
                                          'epoch_%d_step_%d_%s.png' % (epoch, step, ids[i]))
                 pcds = [x[i] for x in all_pcds]
-                plot_pcd_three_views(plot_path, pcds, model.visualize_titles)
+                plot_pcd_three_views(plot_path, pcds, model.visualize_titles, xlim=(-300, 300), ylim=(-300, 300), zlim=(-200, 1200))
 
         if (epoch % args.epochs_per_save == 0) and \
                 not os.path.exists(os.path.join(args.log_dir, 'model-%d.meta' % epoch)):
