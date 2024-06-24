@@ -1,12 +1,12 @@
 # Python
-*/pc_distance/__pycache__/
+__pycache__/
 .ipynb_checkpoints
 
 # Data
 data/
 
 # Log files
-*/log/
+log/
 *.out
 
 # C Extensions
