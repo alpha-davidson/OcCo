@@ -1,4 +1,0 @@
-## OcCo in TensorFlow
-
-
-

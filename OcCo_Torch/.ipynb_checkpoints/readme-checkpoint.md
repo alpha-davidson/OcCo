@@ -1,2 +1,0 @@
-## OcCo in PyTorch
-
