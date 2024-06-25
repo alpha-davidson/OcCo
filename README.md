@@ -40,7 +40,7 @@ In a `conda` environment with Python 3.7:
 4. `pip install msgpack==0.5.6 tensorpack==0.8.9 open3d-python==0.7.0.0`
 
 ### Configuration
-1. From your home directory, `cd` into `/.conda/envs/ENV_NAME/lib/python3.7/site-packages/tensorflow_core/` and run `ln -s libtensorflow_framework.so.1 libtensorflow_framework.so`.
+1. From your home directory, `cd` into `$HOME/.conda/envs/ENV_NAME/lib/python3.7/site-packages/tensorflow_core/` and run `ln -s libtensorflow_framework.so.1 libtensorflow_framework.so`.
 2. Going back to `OcCo_TF/`, in `pc_distance/makefile`, in the first 5 lines, replace every instance of `YOUR_NAME` with your name (your first 2 initials and last name) and every instance of `ENV_NAME` with the name of your environment.
 3. `cd` into `pc_distance/` and run `make`.
 
