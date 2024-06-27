@@ -21,7 +21,7 @@ def plot_pcd_three_views(filename, pcds, titles, suptitle='', sizes=None, cmap='
             ax.view_init(elev, azim)
             ax.scatter(pcd[:, 0], pcd[:, 1], pcd[:, 2], zdir=zdir, c='r', s=size, cmap=cmap, vmin=-1, vmax=0.5)
             ax.set_title(titles[j])
-            #ax.set_axis_off()
+            ax.set_axis_off()
             ax.set_xlim(xlim)
             ax.set_ylim(ylim)
             ax.set_zlim(zlim)
