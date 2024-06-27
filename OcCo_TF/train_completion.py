@@ -148,12 +148,8 @@ def train(args):
     else:
         sess.run(tf.global_variables_initializer())
         if os.path.exists(args.log_dir):
-            delete_key = input(colored('%s exists. Delete? [y/n]' % args.log_dir, 'white', 'on_red'))
-            if delete_key == 'y' or delete_key == "yes":
-                os.system('rm -rf %s/*' % args.log_dir)
-                os.makedirs(os.path.join(args.log_dir, 'plots'))
-        else:
-            os.makedirs(os.path.join(args.log_dir, 'plots'))
+            os.system('rm -rf %s/*' % args.log_dir)
+        os.makedirs(os.path.join(args.log_dir, 'plots'))
         with open(os.path.join(args.log_dir, 'args.txt'), 'w') as log:
             for arg in sorted(vars(args)):
                 log.write(arg + ': ' + str(getattr(args, arg)) + '\n')
@@ -217,7 +213,7 @@ def train(args):
                 plot_path = os.path.join(args.log_dir, 'plots',
                                          'epoch_%d_step_%d_%s.png' % (epoch, step, ids[i]))
                 pcds = [x[i] for x in all_pcds]
-                plot_pcd_three_views(plot_path, pcds, model.visualize_titles)
+                plot_pcd_three_views(plot_path, pcds, model.visualize_titles, xlim=(-300, 300), ylim=(-300, 300), zlim=(-200, 1200))
 
         if (epoch % args.epochs_per_save == 0) and \
                 not os.path.exists(os.path.join(args.log_dir, 'model-%d.meta' % epoch)):
