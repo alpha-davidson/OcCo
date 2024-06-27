@@ -19,7 +19,7 @@ def plot_pcd_three_views(filename, pcds, titles, suptitle='', sizes=None, cmap='
         for j, (pcd, size) in enumerate(zip(pcds, sizes)):
             ax = fig.add_subplot(3, len(pcds), i * len(pcds) + j + 1, projection='3d')
             ax.view_init(elev, azim)
-            ax.scatter(pcd[:, 0], pcd[:, 2], pcd[:, 1], zdir=zdir, c='r', s=size, cmap=cmap, vmin=-1, vmax=0.5)
+            ax.scatter(pcd[:, 0], pcd[:, 1], pcd[:, 2], zdir=zdir, c='r', s=size, cmap=cmap, vmin=-1, vmax=0.5)
             ax.set_title(titles[j])
             #ax.set_axis_off()
             ax.set_xlim(xlim)

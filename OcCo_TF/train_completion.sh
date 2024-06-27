@@ -11,9 +11,8 @@ python OcCo_TF/train_completion.py \
     --lmdb_valid data/O16/serialized/validation.lmdb \
     --log_dir OcCo_TF/log/ \
     --batch_size 16 \
-    --lr_decay \
-    --epoch 10 \
-    --steps_per_print 10 \
-    --steps_per_visu 50 \
-    --num_input_points 700 \
+    --num_gt_points 500 \
+    --epoch 30 \
+    --visu_freq 1 \
+    --num_input_points 350 \
     --dataset shapenet8
