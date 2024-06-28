@@ -5,8 +5,8 @@ COMPLETE_PATH = 'data/O16/occluded/train_complete.npy'
 OCCLUDED_PATH = 'data/O16/occluded/train_occluded.npy'
 
 REQUIRED_CHARGE = 80 # Sensitivity to noise; higher value means more noise removal (and vice versa)
-REQUIRED_POINTS = 500 # Required number of points, after noise removal, to be considered for occlusion
-OCCLUSION_PERSISTANCE = 0.7 # Percentage of points that should be left after occlusion
+REQUIRED_POINTS = 512 # Required number of points, after noise removal, to be considered for occlusion
+OCCLUSION_PERSISTANCE = 0.5 # Percentage of points that should be left after occlusion
 SNAPSHOTS_PER_CLOUD = 10
 CAMERA_BOUNDARIES = [[-300, 300], [-200, 1200], [-300, 300]] # Camera can appear anywhere on the surface of this rectangular prism
 
