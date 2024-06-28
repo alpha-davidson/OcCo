@@ -7,6 +7,8 @@ Necessary packages:
 - `scikit-learn`
 - `tensorpack`
 
+The default name of the environment used throughout the process is `occo-data`.
+
 Steps for generating valid data:
 1. Given a raw O16 `.npy` file (i.e. `O16_w_event_keys.npy`), run `O16_npy_split.py` to split it into training and testing sets of data. Then, run it again to split the training set further into training and validation sets (you may want to run that second split again occasionally to prevent overfitting).
 2. Given any O16 `.npy` file, run `O16_npy_occlude.py` to generate occluded point clouds. This script will output one `.npy` file representing complete point clouds and one `.npy` file representing occluded point clouds.
@@ -14,3 +16,5 @@ Steps for generating valid data:
 4. Given a complete clouds data file and its respective occluded clouds data file, run `O16_npy_serialize.py` to combine the two files into one `.lmdb` file that can be fed into the model!
 
 For each step, double-check the paths and parameters at the top of the code before running the script. The only exception is `O16_npy_serialize.py`, which takes in "input" and "output" paths as arguments to the script through `argparse`.
+
+Also, submit each script as a SLURM job using its respective `.sh` file.

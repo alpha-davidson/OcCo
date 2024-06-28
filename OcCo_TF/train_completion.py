@@ -22,9 +22,6 @@ parser.add_argument('--lr_decay_rate', type=float, default=0.7)
 parser.add_argument('--lr_clip', type=float, default=1e-6)
 parser.add_argument('--max_step', type=int, default=3000000)
 parser.add_argument('--epoch', type=int, default=50)
-parser.add_argument('--steps_per_print', type=int, default=100)
-parser.add_argument('--steps_per_eval', type=int, default=1000)
-parser.add_argument('--steps_per_visu', type=int, default=3456)
 parser.add_argument('--epochs_per_save', type=int, default=5)
 parser.add_argument('--visu_freq', type=int, default=10)
 parser.add_argument('--store_grad', action='store_true')
@@ -167,26 +164,14 @@ def train(args):
     train_start = time.time()
     init_step = sess.run(global_step)
 
+    prev_epoch = 1
     for step in range(init_step + 1, args.max_step + 1):
         epoch = step * args.batch_size // num_train + 1
-        ids, inputs, npts, gt = next(train_gen)
-        if epoch > args.epoch:
-            break
-        if DATASET == 'shapenet8':
-            inputs, npts = vary2fix(inputs, npts)
-
-        start = time.time()
-        feed_dict = {inputs_pl: inputs, npts_pl: npts, gt_pl: gt, is_training_pl: True}
-        _, loss, summary = sess.run([train_op, model.loss, train_summary], feed_dict=feed_dict)
-        total_time += time.time() - start
-        writer.add_summary(summary, step)
-
-        if step % args.steps_per_print == 0:
-            print('epoch %d  step %d  loss %.8f - time per batch %.4f' %
-                  (epoch, step, loss, total_time / args.steps_per_print))
+        if prev_epoch < epoch:
+            print('epoch %d  step %d  loss %.8f - time %.4f' %
+                  (prev_epoch, step, loss, total_time))
             total_time = 0
-
-        if step % args.steps_per_eval == 0:
+        if prev_epoch < epoch:
             print(colored('Testing...', 'grey', 'on_green'))
             num_eval_steps = num_valid // args.batch_size
             total_loss, total_time = 0, 0
@@ -203,23 +188,31 @@ def train(args):
             summary = sess.run(valid_summary, feed_dict={is_training_pl: False})
             writer.add_summary(summary, step)
             print(colored('epoch %d  step %d  loss %.8f - time per batch %.4f' %
-                          (epoch, step, total_loss / num_eval_steps, total_time / num_eval_steps),
+                          (prev_epoch, step, total_loss / num_eval_steps, total_time / num_eval_steps),
                           'grey', 'on_green'))
             total_time = 0
-
-        if step % args.steps_per_visu == 0:
+        if prev_epoch < epoch:
             all_pcds = sess.run(model.visualize_ops, feed_dict=feed_dict)
             for i in range(0, args.batch_size, args.visu_freq):
                 plot_path = os.path.join(args.log_dir, 'plots',
-                                         'epoch_%d_step_%d_%s.png' % (epoch, step, ids[i]))
+                                         'epoch_%d_step_%d_%s.png' % (prev_epoch, step, ids[i]))
                 pcds = [x[i] for x in all_pcds]
-                plot_pcd_three_views(plot_path, pcds, model.visualize_titles, xlim=(-300, 300), ylim=(-300, 300), zlim=(-200, 1200))
-
+                plot_pcd_three_views(plot_path, pcds, model.visualize_titles, xlim=(-1, 1), ylim=(-1, 1), zlim=(-1, 1))
         if (epoch % args.epochs_per_save == 0) and \
                 not os.path.exists(os.path.join(args.log_dir, 'model-%d.meta' % epoch)):
             saver.save(sess, os.path.join(args.log_dir, 'model'), epoch)
             print(colored('Epoch:%d, Model saved at %s' % (epoch, args.log_dir), 'white', 'on_blue'))
-
+        prev_epoch = epoch
+        if epoch > args.epoch:
+            break
+        ids, inputs, npts, gt = next(train_gen)
+        if DATASET == 'shapenet8':
+            inputs, npts = vary2fix(inputs, npts)
+        start = time.time()
+        feed_dict = {inputs_pl: inputs, npts_pl: npts, gt_pl: gt, is_training_pl: True}
+        _, loss, summary = sess.run([train_op, model.loss, train_summary], feed_dict=feed_dict)
+        total_time += time.time() - start
+        writer.add_summary(summary, step)
     print('Total time', datetime.timedelta(seconds=time.time() - train_start))
     sess.close()
 

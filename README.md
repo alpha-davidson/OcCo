@@ -39,17 +39,20 @@ In a `conda` environment with Python 3.7:
 3. `conda install -c nvidia cuda-nvcc cuda-cudart-dev`
 4. `pip install msgpack==0.5.6 tensorpack==0.8.9 open3d-python==0.7.0.0`
 
+The default name of this environment used throughout the code is `occo-tf`. If you choose to name your environment differently, you will need to make edits to `OcCo_TF/train_completion.sh` and `OcCo_TF/pc_distance/makefile`.
+
 ### Configuration
-1. From your home directory, `cd` into `$HOME/.conda/envs/ENV_NAME/lib/python3.7/site-packages/tensorflow_core/` and run `ln -s libtensorflow_framework.so.1 libtensorflow_framework.so`.
-2. Going back to `OcCo_TF/`, in `pc_distance/makefile`, in the first 5 lines, replace every instance of `YOUR_NAME` with your name (your first 2 initials and last name) and every instance of `ENV_NAME` with the name of your environment.
-3. `cd` into `pc_distance/` and run `make`.
+1. `cd` into `$HOME/.conda/envs/occo-tf/lib/python3.7/site-packages/tensorflow_core/` and run `ln -s libtensorflow_framework.so.1 libtensorflow_framework.so`.
+2. `cd` into `$HOME/OcCo/OcCo_TF/pc_distance/` and run `make`.
+
+Again, if you named your environment differently, you will need to edit the path for the first step.
 
 ### Data
 Obtain two valid `.lmdb` files, one for training and one for validation. Example datasets can be found at https://drive.google.com/drive/folders/1M_lJN14Ac1RtPtEQxNlCV9e8pom3U6Pa, or refer to <a href="render/README.md">render/README.md</a> for instructions on how to generate these yourself.
 
 ### Running
 
-`train_completion.py` is the script that trains the OcCo model. Use `train.sh` to submit it as a SLURM job:
+`train_completion.py` is the script that trains the OcCo model. Use `train_completion.sh` to submit it as a SLURM job:
 ```
 #!/bin/bash
 
@@ -57,8 +60,18 @@ Obtain two valid `.lmdb` files, one for training and one for validation. Example
 #SBATCH --output "occo_train.out"
 #SBATCH --gpus 1
 
-source "/opt/conda/bin/activate" "ENV_NAME"
-python train_completion.py --gpu 0 --lmdb_train data/O16/train.lmdb --lmdb_valid data/O16/validation.lmdb --log_dir ./log --batch_size 10 --lr_decay --epoch 10 --steps_per_print 1 --steps_per_visu 1 --num_input_points 700
+source "/opt/conda/bin/activate" "occo-tf"
+python OcCo_TF/train_completion.py \
+    --gpu 0 \
+    --lmdb_train data/O16/serialized/train.lmdb \
+    --lmdb_valid data/O16/serialized/validation.lmdb \
+    --log_dir OcCo_TF/log/ \
+    --batch_size 16 \
+    --num_gt_points 500 \
+    --epoch 30 \
+    --visu_freq 1 \
+    --num_input_points 350 \
+    --dataset shapenet8
 ```
 
 ## Results

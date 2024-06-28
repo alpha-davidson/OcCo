@@ -1,14 +1,16 @@
 import numpy as np, open3d
 
-INPUT_PATH = 'OcCo_TF/data/O16/split/validation.npy'
-COMPLETE_PATH = 'OcCo_TF/data/O16/occluded/validation_complete.npy'
-OCCLUDED_PATH = 'OcCo_TF/data/O16/occluded/validation_occluded.npy'
+INPUT_PATH = 'data/O16/split/train.npy'
+COMPLETE_PATH = 'data/O16/occluded/train_complete.npy'
+OCCLUDED_PATH = 'data/O16/occluded/train_occluded.npy'
 
 REQUIRED_CHARGE = 80 # Sensitivity to noise; higher value means more noise removal (and vice versa)
-REQUIRED_POINTS = 500 # Required number of points, after noise removal, to be considered for occlusion
-OCCLUSION_PERSISTANCE = 0.7 # Percentage of points that should be left after occlusion
+REQUIRED_POINTS = 512 # Required number of points, after noise removal, to be considered for occlusion
+OCCLUSION_PERSISTANCE = 0.5 # Percentage of points that should be left after occlusion
 SNAPSHOTS_PER_CLOUD = 10
 CAMERA_BOUNDARIES = [[-300, 300], [-200, 1200], [-300, 300]] # Camera can appear anywhere on the surface of this rectangular prism
+
+#np.random.seed(12079522)
 
 def randomCameraPosition(borders):
     random_x = np.random.randint(borders[0][0], borders[0][1])
@@ -20,19 +22,26 @@ def randomCameraPosition(borders):
     camera[x_z_y] = borders[x_z_y][left_right]
     return camera
 
-def smartOccludePointCloud(points, camera, percentage):
-    START_RADIUS = 1000
-    RADIUS_GROWTH = 1.05
+def occludePointCloud(points, camera, percentage):
+    START_RADIUS = 1000 # Hold-over from previous occlusion method; doesn't impact much
     pcd = open3d.geometry.PointCloud()
     pcd.points = open3d.utility.Vector3dVector(points)
-    new_points = np.asarray([])
     radius = START_RADIUS
-    while len(new_points) / len(points) < percentage:
-        radius *= RADIUS_GROWTH
+    occlusion = 0
+    while occlusion < percentage:
         _, visible_points = pcd.hidden_point_removal(camera, radius)
         new_pcd = pcd.select_by_index(visible_points)
         new_points = np.asarray(new_pcd.points)
+        occlusion = len(new_points) / len(points)
+        radius *= percentage / occlusion # Insanely fast and insanely accurate
     return new_points
+
+def normalizePointCloud(points):
+    # -1 to 1
+    points[:,0] = points[:,0] / 250
+    points[:,1] = points[:,1] / 250
+    points[:,2] = points[:,2] / 500 - 1
+    return points
 
 data = np.load(INPUT_PATH, mmap_mode='r')
 num_of_events = data.shape[0]
@@ -41,10 +50,7 @@ print('Number of events: ' + str(num_of_events))
 complete_clouds = []
 occluded_clouds = []
 
-for index in range(num_of_events // 100):
-    if (index % 1000 == 0):
-        print('Now on: Event #' + str(index))
-    event = data[index]
+for event in data:
     event = event[np.any(event, axis=1)] # Remove all-zero rows
     event = event[np.where(event[:,4] >= REQUIRED_CHARGE)] # Remove noise
     points = event[:,:3] # Take only x,y,z
@@ -53,13 +59,15 @@ for index in range(num_of_events // 100):
         continue
     points = points[np.random.choice(num_of_points, size=REQUIRED_POINTS, replace=False)] # Downsample
     new_num_of_points = int(REQUIRED_POINTS * OCCLUSION_PERSISTANCE)
-    complete_clouds.append(points)
     occluded_clouds_i = []
     for j in range(SNAPSHOTS_PER_CLOUD):
         camera = randomCameraPosition(CAMERA_BOUNDARIES)
-        new_points = smartOccludePointCloud(points, camera, OCCLUSION_PERSISTANCE)
+        new_points = occludePointCloud(points, camera, OCCLUSION_PERSISTANCE)
         new_points = new_points[np.random.choice(new_points.shape[0], size=new_num_of_points, replace=False)] # Downsample
+        new_points = normalizePointCloud(new_points)
         occluded_clouds_i.append(new_points)
+    points = normalizePointCloud(points)
+    complete_clouds.append(points)
     occluded_clouds.append(occluded_clouds_i)
 
 complete_clouds = np.asarray(complete_clouds)
