@@ -3,7 +3,7 @@
 #SBATCH --job-name "OcCo_Serialize"
 #SBATCH --output "occo_serialize.out"
 
-source "/opt/conda/bin/activate" "occo-data"
+source "/opt/conda/bin/activate" "occo-tf"
 python render/O16_npy_serialize.py \
     --complete_dir data/O16/occluded/train_complete.npy \
     --occluded_dir data/O16/occluded/train_occluded.npy \

@@ -1,9 +1,9 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-INPUT_PATH = 'data/O16/split/O16_w_event_keys.npy'
+INPUT_PATH = 'data/O16/split/train_validation.npy'
 TRAIN_PATH = 'data/O16/split/train.npy'
-TEST_PATH = 'data/O16/split/test.npy'
+TEST_PATH = 'data/O16/split/validation.npy'
 
 SPLIT = 0.8 # Fraction of data for training
 

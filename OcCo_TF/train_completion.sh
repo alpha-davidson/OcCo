@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name "OcCo_Test"
-#SBATCH --output "occo_test.out"
+#SBATCH --job-name "OcCo_Train"
+#SBATCH --output "occo_train.out"
 #SBATCH --gpus 1
 
 source "/opt/conda/bin/activate" "occo-tf"
@@ -11,8 +11,8 @@ python OcCo_TF/train_completion.py \
     --lmdb_valid data/O16/serialized/validation.lmdb \
     --log_dir OcCo_TF/log/ \
     --batch_size 16 \
-    --num_gt_points 500 \
-    --epoch 30 \
+    --num_gt_points 512 \
+    --epoch 50 \
     --visu_freq 1 \
-    --num_input_points 350 \
+    --num_input_points 384 \
     --dataset shapenet8
