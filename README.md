@@ -48,7 +48,9 @@ The default name of this environment used throughout the code is `occo-tf`. If y
 Again, if you named your environment differently, you will need to edit the path for the first step.
 
 ### Data
-Obtain two valid `.lmdb` files, one for training and one for validation. Example datasets can be found at https://drive.google.com/drive/folders/1M_lJN14Ac1RtPtEQxNlCV9e8pom3U6Pa, or refer to <a href="render/README.md">render/README.md</a> for instructions on how to generate these yourself.
+Currently, this model only operates on O16 data from the Active Target Time Projection Chamber (AT-TPC).
+
+Training and validation datasets are formatted as special `.lmdb` files, where each file contains both complete and occluded point clouds. Example datasets can be found at https://drive.google.com/drive/folders/1M_lJN14Ac1RtPtEQxNlCV9e8pom3U6Pa, or refer to <a href="render/README.md">render/README.md</a> for instructions on how to generate these yourself.
 
 ### Running
 

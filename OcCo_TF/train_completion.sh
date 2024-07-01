@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name "OcCo_Test"
-#SBATCH --output "occo_test.out"
+#SBATCH --job-name "OcCo_Train"
+#SBATCH --output "occo_train.out"
 #SBATCH --gpus 1
 
 source "/opt/conda/bin/activate" "occo-tf"
