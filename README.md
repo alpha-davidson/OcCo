@@ -33,11 +33,12 @@ The original code for Occlusion Completion consisted of two implementations: one
 To run the `TensorFlow` implementation which can be found in `OcCo_TF/`, take the following prerequisite steps:
 
 ### Environment
-In a `conda` environment with Python 3.7:
-1. `conda install python-lmdb>=0.9 numpy=1.19.5 pyarrow>=0.10.0 matplotlib>=2.1.0 tensorflow-gpu=1.15.0`
-2. `conda install -c open3d-admin open3d>=0.9.0.0`
-3. `conda install -c nvidia cuda-nvcc cuda-cudart-dev`
-4. `pip install msgpack==0.5.6 tensorpack==0.8.9 open3d-python==0.7.0.0`
+It is unknown if the `Requirements_TF.txt` file works in its current form for a `pipenv` environment. Instead, use `conda`:
+1. `conda create -n occo-tf python=3.7`
+2. `conda install python-lmdb>=0.9 numpy=1.19.5 pyarrow>=0.10.0 matplotlib>=2.1.0 tensorflow-gpu=1.15.0`
+3. `conda install -c open3d-admin open3d>=0.9.0.0`
+4. `conda install -c nvidia cuda-nvcc cuda-cudart-dev`
+5. `pip install msgpack==0.5.6 tensorpack==0.8.9 open3d-python==0.7.0.0`
 
 The default name of this environment used throughout the code is `occo-tf`. If you choose to name your environment differently, you will need to make edits to `OcCo_TF/train_completion.sh` and `OcCo_TF/pc_distance/makefile`.
 
@@ -48,7 +49,11 @@ The default name of this environment used throughout the code is `occo-tf`. If y
 Again, if you named your environment differently, you will need to edit the path for the first step.
 
 ### Data
-Obtain two valid `.lmdb` files, one for training and one for validation. Example datasets can be found at https://drive.google.com/drive/folders/1M_lJN14Ac1RtPtEQxNlCV9e8pom3U6Pa, or refer to <a href="render/README.md">render/README.md</a> for instructions on how to generate these yourself.
+Currently, this model only operates on O16 data from the Active Target Time Projection Chamber (AT-TPC).
+
+Training and validation datasets are formatted as special `.lmdb` files, where each file contains both complete and occluded point clouds. Example datasets can be found at https://drive.google.com/drive/folders/1M_lJN14Ac1RtPtEQxNlCV9e8pom3U6Pa. In the event this link ever breaks, some of the shapenet files are stored locally at `/home/DAVIDSON/destephens/OcCo/data/shapenet/`.
+
+Refer to <a href="render/README.md">render/README.md</a> for instructions on how to generate the specialized `.lmdb` files yourself.
 
 ### Running
 
