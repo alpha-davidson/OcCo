@@ -3,12 +3,12 @@
 This is the `TensorFlow` implementation for Occlusion Completion (OcCo). It is the primary framework for Occlusion Completion; the `PyTorch` implementation has not yet been tested.
 
 ### Setup
-
-Create a `conda` environemnt with Python 3.7 named `occo-tf` and run the following installation commands:
-1. `conda install python-lmdb>=0.9 numpy=1.19.5 pyarrow>=0.10.0 matplotlib>=2.1.0 tensorflow-gpu=1.15.0`
-2. `conda install -c open3d-admin open3d>=0.9.0.0`
-3. `conda install -c nvidia cuda-nvcc cuda-cudart-dev`
-4. `pip install msgpack==0.5.6 tensorpack==0.8.9 open3d-python==0.7.0.0`
+It is unknown if `Requirements_TF.txt` works in its current form for a `pipenv` environment. Instead, use `conda`:
+1. `conda create -n occo-tf python=3.7`
+2. `conda install python-lmdb>=0.9 numpy=1.19.5 pyarrow>=0.10.0 matplotlib>=2.1.0 tensorflow-gpu=1.15.0`
+3. `conda install -c open3d-admin open3d>=0.9.0.0`
+4. `conda install -c nvidia cuda-nvcc cuda-cudart-dev`
+5. `pip install msgpack==0.5.6 tensorpack==0.8.9 open3d-python==0.7.0.0`
 
 As of June 28 2024, this resulted in the following versions:
 - `cuda-cudart-dev==12.4.127`
@@ -37,6 +37,6 @@ Note: the `--num_input_points` and `--num_gt_points` flags are for clarifying to
 
 ### Architecture
 
-The encoder-decoder architecures used in training the model can be found in `completion_models/`. There are 3 models already implemented for you: Dynamic Graph Convolutional Neural Network (DGCNN), Point Completion Network (PCN), and PointNet. Each can be used with either Chamfer Distance (CD) or Earth Mover Distance (EMD) as the loss function.
+The encoder-decoder architectures used in training the model can be found in `completion_models/`. There are 3 models already implemented for you: Dynamic Graph Convolutional Neural Network (DGCNN), Point Completion Network (PCN), and PointNet. Each can be used with either Chamfer Distance (CD) or Earth Mover Distance (EMD) as the loss function.
 
 The default architecture is a PCN with Chamfer Distance, the details of which can be found in `completion_models/pcn_cd.py`. To specify a different architecture, set the `--model_type` flag accordingly.
