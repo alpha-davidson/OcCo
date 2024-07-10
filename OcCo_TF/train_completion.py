@@ -196,7 +196,7 @@ def train(args):
             all_pcds = sess.run(model.visualize_ops, feed_dict=feed_dict)
             for i in range(0, args.batch_size, args.visu_freq):
                 plot_path = os.path.join(args.log_dir, 'plots',
-                                         'epoch_%d_step_%d_%s.png' % (prev_epoch, step, ids[i]))
+                                         'epoch_%02d_step_%d_%s.png' % (prev_epoch, step, ids[i]))
                 pcds = [x[i] for x in all_pcds]
                 plot_pcd_three_views(plot_path, pcds, model.visualize_titles, xlim=(-1, 1), ylim=(-1, 1), zlim=(-1, 1))
         if (epoch % args.epochs_per_save == 0) and \

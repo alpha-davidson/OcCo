@@ -14,9 +14,9 @@ class pcd_df(DataFlow):
         return self.num_examples * self.num_snapshots
 
     def get_data(self):
-        for i in range(self.num_examples):
-            complete = self.complete_clouds[i]
-            for j in range(self.num_snapshots):
+        for j in range(self.num_snapshots):
+            for i in range(self.num_examples):
+                complete = self.complete_clouds[i]
                 occluded = self.occluded_clouds[i][j]
                 yield ('example_' + str(i)), occluded, complete
 
