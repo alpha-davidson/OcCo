@@ -10,10 +10,11 @@ python OcCo_TF/train_completion.py \
     --lmdb_train data/O16/serialized/train.lmdb \
     --lmdb_valid data/O16/serialized/validation.lmdb \
     --log_dir OcCo_TF/log/ \
-    --batch_size 8 \
-    --num_gt_points 256 \
+    --batch_size 16 \
+    --num_gt_points 512 \
     --lr_decay \
-    --epoch 20 \
+    --epoch 50 \
+    --epochs_per_save 1 \
     --visu_freq 1 \
-    --num_input_points 256 \
+    --num_input_points 512 \
     --dataset shapenet8

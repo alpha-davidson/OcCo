@@ -9,7 +9,7 @@ from utils.tf_util import mlp, mlp_conv, point_maxpool, point_unpool, chamfer, \
 class Model:
     def __init__(self, inputs, npts, gt, alpha, **kwargs):
         self.__dict__.update(kwargs)  # batch_decay and is_training
-        self.num_coarse = 256
+        self.num_coarse = 512
         self.grid_size = 4
         self.grid_scale = 0.05
         self.num_fine = self.grid_size ** 2 * self.num_coarse

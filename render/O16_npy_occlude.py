@@ -5,7 +5,7 @@ COMPLETE_PATH = 'data/O16/occluded/validation_complete.npy'
 OCCLUDED_PATH = 'data/O16/occluded/validation_occluded.npy'
 
 REQUIRED_CHARGE = 80 # Sensitivity to noise; higher value means more noise removal (and vice versa)
-NUM_OF_POINTS = 256
+NUM_OF_POINTS = 512
 OCCLUSION_PERSISTANCE = 0.75 # Percentage of points that should be left after occlusion
 SNAPSHOTS_PER_CLOUD = 10
 CAMERA_BOUNDARIES = [[-300, 300], [-200, 1200], [-300, 300]] # Camera can appear anywhere on the surface of this rectangular prism
