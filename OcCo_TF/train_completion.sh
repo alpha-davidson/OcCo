@@ -14,7 +14,6 @@ python OcCo_TF/train_completion.py \
     --num_gt_points 512 \
     --lr_decay \
     --epoch 50 \
-    --epochs_per_save 1 \
     --visu_freq 1 \
     --num_input_points 512 \
     --dataset shapenet8
