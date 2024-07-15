@@ -1,8 +1,8 @@
 import numpy as np, open3d
 
-INPUT_PATH = 'data/O16/split/validation.npy'
-COMPLETE_PATH = 'data/O16/occluded/validation_complete.npy'
-OCCLUDED_PATH = 'data/O16/occluded/validation_occluded.npy'
+INPUT_PATH = 'data/O16/split/train.npy'
+COMPLETE_PATH = 'data/O16/occluded/train_complete.npy'
+OCCLUDED_PATH = 'data/O16/occluded/train_occluded.npy'
 
 REQUIRED_CHARGE = 80 # Sensitivity to noise; higher value means more noise removal (and vice versa)
 NUM_OF_POINTS = 512
