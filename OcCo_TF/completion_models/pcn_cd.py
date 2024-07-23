@@ -9,7 +9,7 @@ from utils.tf_util import mlp, mlp_conv, point_maxpool, point_unpool, chamfer, \
 class Model:
     def __init__(self, inputs, npts, gt, alpha, **kwargs):
         self.__dict__.update(kwargs)  # batch_decay and is_training
-        self.num_coarse = 1024
+        self.num_coarse = 512
         self.grid_size = 4
         self.grid_scale = 0.05
         self.num_fine = self.grid_size ** 2 * self.num_coarse
@@ -34,24 +34,7 @@ class Model:
         with tf.variable_scope('decoder', reuse=tf.AUTO_REUSE):
             coarse = mlp(features, [1024, 1024, self.num_coarse * 3])
             coarse = tf.reshape(coarse, [-1, self.num_coarse, 3])
-
-        with tf.variable_scope('folding', reuse=tf.AUTO_REUSE):
-            grid = tf.meshgrid(tf.linspace(-0.05, 0.05, self.grid_size), tf.linspace(-0.05, 0.05, self.grid_size))
-            grid = tf.expand_dims(tf.reshape(tf.stack(grid, axis=2), [-1, 2]), 0)
-            grid_feat = tf.tile(grid, [features.shape[0], self.num_coarse, 1])
-
-            point_feat = tf.tile(tf.expand_dims(coarse, 2), [1, 1, self.grid_size ** 2, 1])
-            point_feat = tf.reshape(point_feat, [-1, self.num_fine, 3])
-
-            global_feat = tf.tile(tf.expand_dims(features, 1), [1, self.num_fine, 1])
-
-            feat = tf.concat([grid_feat, point_feat, global_feat], axis=2)
-
-            center = tf.tile(tf.expand_dims(coarse, 2), [1, 1, self.grid_size ** 2, 1])
-            center = tf.reshape(center, [-1, self.num_fine, 3])
-
-            fine = mlp_conv(feat, [512, 512, 3]) + center
-        return coarse, fine
+        return coarse, coarse # FIX THIS
 
     def create_loss(self, coarse, fine, gt, alpha):
 

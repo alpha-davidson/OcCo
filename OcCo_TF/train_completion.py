@@ -75,8 +75,9 @@ def train(args):
 
     is_training_pl = tf.placeholder(tf.bool, shape=(), name='is_training')
     global_step = tf.Variable(0, trainable=False, name='global_step')
-    alpha = tf.train.piecewise_constant(global_step, [10000, 20000, 50000],
-                                        [0.01, 0.1, 0.5, 1.0], 'alpha_op')
+    alpha = 0 # Removes fine output from the loss calculation
+    #alpha = tf.train.piecewise_constant(global_step, [10000, 20000, 50000],
+    #                                    [0.01, 0.1, 0.5, 1.0], 'alpha_op')
 
     # for ModelNet, it is with Fixed Number of Input Points
     # for ShapeNet, it is with Varying Number of Input Points
@@ -195,7 +196,7 @@ def train(args):
             all_pcds = sess.run(model.visualize_ops, feed_dict=feed_dict)
             for i in range(0, args.batch_size, args.visu_freq):
                 plot_path = os.path.join(args.log_dir, 'plots',
-                                         'epoch_%d_step_%d_%s.png' % (prev_epoch, step, ids[i]))
+                                         'epoch_%02d_step_%d_%s.png' % (prev_epoch, step, ids[i]))
                 pcds = [x[i] for x in all_pcds]
                 plot_pcd_three_views(plot_path, pcds, model.visualize_titles, xlim=(-1, 1), ylim=(-1, 1), zlim=(-1, 1))
         if (epoch % args.epochs_per_save == 0) and \
