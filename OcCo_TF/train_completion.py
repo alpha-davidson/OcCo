@@ -75,12 +75,6 @@ def train(args):
 
     is_training_pl = tf.placeholder(tf.bool, shape=(), name='is_training')
     global_step = tf.Variable(0, trainable=False, name='global_step')
-<<<<<<< HEAD
-=======
-    alpha = 0 # Removes fine output from the loss calculation
-    #alpha = tf.train.piecewise_constant(global_step, [10000, 20000, 50000],
-    #                                    [0.01, 0.1, 0.5, 1.0], 'alpha_op')
->>>>>>> master
 
     # for ModelNet, it is with Fixed Number of Input Points
     # for ShapeNet, it is with Varying Number of Input Points
