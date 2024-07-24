@@ -31,7 +31,7 @@ Next, to actually be able to train the model, run the following two commands:
 
 ### Training
 
-The model is currently set to train for 30 epochs using the `train_completion.py` script. Submit it as a SLURM job using `train_completion.sh`.
+The model is currently set to train for 50 epochs using the `train_completion.py` script. Submit it as a SLURM job using `train_completion.sh`.
 
 Note: the `--num_input_points` and `--num_gt_points` flags are for clarifying to the model how many points are in each occluded and complete point cloud, respectively, **only in the datasets provided using the** `--lmdb_train` **and** `--lmdb_valid` **flags. They do not influence how many points the model predicts when completing a point cloud.** To change the actual completions of the model, edit the architecture itself.
 

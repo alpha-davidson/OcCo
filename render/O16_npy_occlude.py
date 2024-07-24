@@ -1,14 +1,15 @@
-import numpy as np, open3d
+import argparse, numpy as np, open3d
 
-INPUT_PATH = 'data/O16/split/train.npy'
-COMPLETE_PATH = 'data/O16/occluded/train_complete.npy'
-OCCLUDED_PATH = 'data/O16/occluded/train_occluded.npy'
-
-REQUIRED_CHARGE = 80 # Sensitivity to noise; higher value means more noise removal (and vice versa)
-NUM_OF_POINTS = 512
-OCCLUSION_PERSISTANCE = 0.75 # Percentage of points that should be left after occlusion
-SNAPSHOTS_PER_CLOUD = 10
-CAMERA_BOUNDARIES = [[-300, 300], [-200, 1200], [-300, 300]] # Camera can appear anywhere on the surface of this rectangular prism
+parser = argparse.ArgumentParser()
+parser.add_argument('--input_path', type=str, default='data/O16/split/train.npy')
+parser.add_argument('--complete_path', type=str, default='data/O16/occluded/train_complete.npy')
+parser.add_argument('--occluded_path', type=str, default='data/O16/occluded/train_occluded.npy')
+parser.add_argument('--required_charge', type=float, default=80) # Sensitivity to noise; higher value means more noise removal (and vice versa)
+parser.add_argument('--num_of_points', type=int, default=512)
+parser.add_argument('--occlusion_persistance', type=float, default=0.75) # Percentage of points that should be left after occlusion
+parser.add_argument('--snapshots_per_cloud', type=int, default=10)
+parser.add_argument('--camera_boundaries', type=float, nargs=6, default=[[-300, 300], [-200, 1200], [-300, 300]]) # Camera can appear anywhere on the surface of this rectangular prism
+args = parser.parse_args()
 
 #np.random.seed(12079522)
 
@@ -49,29 +50,29 @@ def normalizePointCloud(points):
     points[:,2] = points[:,2] / 500 - 1
     return points
 
-data = np.load(INPUT_PATH, mmap_mode='r')
+data = np.load(args.input_path, mmap_mode='r')
 num_of_events = data.shape[0]
 print('Number of events: ' + str(num_of_events))
 
 complete_clouds = []
 occluded_clouds = []
-starting_num_of_points = int(NUM_OF_POINTS / OCCLUSION_PERSISTANCE)
+starting_num_of_points = int(args.num_of_points / args.occlusion_persistance)
 
 for event in data:
     event = event[np.any(event, axis=1)] # Remove all-zero rows
-    event = event[np.where(event[:,4] >= REQUIRED_CHARGE)] # Remove noise
+    event = event[np.where(event[:,4] >= args.required_charge)] # Remove noise
     points = event[:,:3] # Take only x,y,z
     num_of_points = points.shape[0]
     if num_of_points < starting_num_of_points:
         continue
     points = downsamplePointCloud(points, starting_num_of_points)
     occluded_clouds_i = []
-    for j in range(SNAPSHOTS_PER_CLOUD):
-        camera = randomCameraPosition(CAMERA_BOUNDARIES)
-        new_points = occludePointCloud(points, NUM_OF_POINTS, camera)
+    for j in range(args.snapshots_per_cloud):
+        camera = randomCameraPosition(args.camera_boundaries)
+        new_points = occludePointCloud(points, args.num_of_points, camera)
         new_points = normalizePointCloud(new_points)
         occluded_clouds_i.append(new_points)
-    points = downsamplePointCloud(points, NUM_OF_POINTS) # Downsample
+    points = downsamplePointCloud(points, args.num_of_points) # Downsample
     points = normalizePointCloud(points)
     complete_clouds.append(points)
     occluded_clouds.append(occluded_clouds_i)
@@ -80,5 +81,5 @@ complete_clouds = np.asarray(complete_clouds)
 occluded_clouds = np.asarray(occluded_clouds)
 
 print('Now saving ' + str(complete_clouds.shape[0]) + ' complete point clouds...')
-np.save(COMPLETE_PATH, complete_clouds)
-np.save(OCCLUDED_PATH, occluded_clouds)
+np.save(args.complete_path, complete_clouds)
+np.save(args.occluded_path, occluded_clouds)
