@@ -91,4 +91,10 @@ Furthermore, the model is overfitting. It can complete training data far better 
 
 ![Loss Curve](assets/loss_curve.png)
 
-More work needs to be done on the model to improve the validation completions. Furthermore, the encoder weights still need to be tested on downstream tasks to determine if Occlusion Completion is a good method of pre-training on physics tasks. 
+More work needs to be done on the model to improve the validation completions. Furthermore, the encoder weights still need to be tested on downstream tasks to determine if Occlusion Completion is a good method of pre-training on physics tasks.
+
+## Contributors
+
+**Summer 2024:** Derek Stephens, Silas Garrett
+
+Thank you to Michelle Kuchera and Raghu Ramanujan for supervising this project (and approving all our pull requests!)
