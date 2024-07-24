@@ -22,7 +22,7 @@ Occlusion Completion is a method of pre-training that involves reconstructing a 
 
 "Occlusion", in this case, is referring to covering up some of the points of a point cloud by pointing a camera at the point cloud and determining which points the camera cannot see. Since, theoretically, a perfect camera could see every point which is not exactly collinear with another, this involves some estimation. The method of occlusion we are currently using is described in https://www.weizmann.ac.il/math/ronen/sites/math.ronen/files/uploads/katz_tal_basri_-_direct_visibility_of_point_sets.pdf.
 
-The model itself consists of an encoder and a decoder. The encoder takes in an occluded point cloud as input and converts it into a 1024-dimenstional vector. The decoder then takes that 1024-dimensional vector and converts it back into a point cloud, this time with many more points. This outputted point cloud is what the model believes the original point cloud was.
+The model itself consists of an encoder and a decoder. The encoder takes in an occluded point cloud as input and converts it into a 512-dimenstional vector. The decoder then takes that 512-dimensional vector and converts it back into a point cloud, this time with many more points. This outputted point cloud is what the model believes the original point cloud was.
 
 The hope is that this model learns useful properties of geometry and light that can be extended to other tasks. The encoder weights of this model can hopefully be used as initial weights in other models in order to speed up training or decrease the amount of data needed.
 
@@ -72,13 +72,23 @@ python OcCo_TF/train_completion.py \
     --lmdb_valid data/O16/serialized/validation.lmdb \
     --log_dir OcCo_TF/log/ \
     --batch_size 16 \
-    --num_gt_points 500 \
-    --epoch 30 \
+    --num_gt_points 512 \
+    --epoch 50 \
     --visu_freq 1 \
-    --num_input_points 350 \
+    --num_input_points 512 \
     --dataset shapenet8
 ```
 
 ## Results
 
-Coming soon!
+Currently, the model can grasp the overall shape of the tracks, but fails to recreate smooth paths like in the ground truth. Some examples of completions are shown below:
+
+![Current Completions](assets/completions.png)
+
+This is likely due to the fact that OcCo was originally used for completing point clouds of 3D shapes (i. e. point clouds generated from triangle meshes). Point cloud data from the AT-TPC does not represent a polyhedron, but rather the path of a particle through space.
+
+Furthermore, the model is overfitting. It can complete training data far better than it can validation data, as shown in the loss curve below.
+
+![Loss Curve](assets/loss_curve.png)
+
+More work needs to be done on the model to improve the validation completions. Furthermore, the encoder weights still need to be tested on downstream tasks to determine if Occlusion Completion is a good method of pre-training on physics tasks. 

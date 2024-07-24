@@ -75,21 +75,17 @@ def train(args):
 
     is_training_pl = tf.placeholder(tf.bool, shape=(), name='is_training')
     global_step = tf.Variable(0, trainable=False, name='global_step')
-    alpha = 0
-    #alpha = tf.train.piecewise_constant(global_step, [10000, 20000, 50000],
-    #                                    [0.01, 0.1, 0.5, 1.0], 'alpha_op')
 
     # for ModelNet, it is with Fixed Number of Input Points
     # for ShapeNet, it is with Varying Number of Input Points
     inputs_pl = tf.placeholder(tf.float32, (1, BATCH_SIZE * NUM_POINT, 3), 'inputs')
     npts_pl = tf.placeholder(tf.int32, (BATCH_SIZE,), 'num_points')
     gt_pl = tf.placeholder(tf.float32, (BATCH_SIZE, args.num_gt_points, 3), 'ground_truths')
-    add_train_summary('alpha', alpha)
     bn_decay = get_bn_decay(global_step)
     add_train_summary('bn_decay', bn_decay)
 
     model_module = importlib.import_module('.%s' % args.model_type, 'completion_models')
-    model = model_module.Model(inputs_pl, npts_pl, gt_pl, alpha,
+    model = model_module.Model(inputs_pl, npts_pl, gt_pl,
                                bn_decay=bn_decay, is_training=is_training_pl)
 
     # Another Solution instead of importlib:
